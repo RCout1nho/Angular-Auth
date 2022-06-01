@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +15,25 @@ export class LoginComponent implements OnInit {
 
   public msgError!: string;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {}
 
-  public submitForm() {}
+  public submitForm() {
+    if (this.formAuth.valid) {
+      this.authService
+        .login({
+          email: this.formAuth.value.email,
+          password: this.formAuth.value.password,
+        })
+        .subscribe({
+          error: (e) => {
+            this.msgError = e;
+          },
+        });
+    }
+  }
 }
